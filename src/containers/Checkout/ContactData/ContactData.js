@@ -13,7 +13,8 @@ class ContactData extends Component {
             street: '',
             postalCode: ''
         },
-        loading: false
+        loading: false,
+        price: 0
     };
 
     orderHandler = (event) => {
@@ -22,7 +23,7 @@ class ContactData extends Component {
         this.setState({loading: true});
         const order = {
             ingredients: this.props.ingredients,
-            price: this.state.totalPrice,
+            price: this.props.price,
             customer: {
                 name: 'Shashank Biplav',
                 address: {
