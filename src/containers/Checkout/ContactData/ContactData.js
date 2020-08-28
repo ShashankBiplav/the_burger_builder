@@ -80,14 +80,17 @@ class ContactData extends Component {
                 elementType: 'select',
                 elementConfig: {
                     options: [
-                        {value: 'default', displayValue: 'Select'},
+                        {value: 'default', displayValue: 'Default'},
                         {value: 'fastest', displayValue: 'Fastest'},
                         {value: 'free', displayValue: 'Free'},
                     ]
                 },
-                value: ''
+                value: 'Default',
+                validation: {},
+                valid: true
             }
         },
+        formIsValid: false,
         loading: false,
         price: 0
     };
@@ -98,7 +101,6 @@ class ContactData extends Component {
         const formData = {};
         for (let formElementIdentifier in this.state.orderForm) {
             formData[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
-
         }
         const order = {
             ingredients: this.props.ingredients,
@@ -119,6 +121,9 @@ class ContactData extends Component {
 
     checkValidity = (value, rules) => {
         let isValid = true;
+        if (!rules){
+            return true;
+        }
         if (rules.required){
             isValid = value.trim() !== '' && isValid;
         }
@@ -143,7 +148,11 @@ class ContactData extends Component {
         updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
         updatedFormElement.touched = true;
         updatedOrderForm[inputIdentifier] = updatedFormElement;
-        this.setState({orderForm: updatedOrderForm});
+        let formIsValid = true;
+        for (let inputIdentifier in updatedOrderForm){
+            formIsValid =updatedOrderForm[inputIdentifier].valid && formIsValid;
+        }
+        this.setState({orderForm: updatedOrderForm, formIsValid: formIsValid});
     };
 
     render() {
@@ -166,10 +175,11 @@ class ContactData extends Component {
                             invalid={!formElement.config.valid}
                             shouldValidate={formElement.config.validation}
                             touched={formElement.config.touched}
+                            valuetype={formElement.id}
                         />
                     )
                 )}
-                <Button btnType="Success">Order</Button>
+                <Button btnType="Success" disabled={!this.state.formIsValid}>Order</Button>
             </form>
         );
         if (this.state.loading) {

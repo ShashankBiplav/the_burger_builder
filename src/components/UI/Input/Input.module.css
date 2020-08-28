@@ -30,3 +30,8 @@
     border: 1px solid crimson;
     background-color: #FDA49A;
 }
+
+.ValidationError {
+    color: crimson;
+    margin: 5px 0;
+}
