@@ -14,7 +14,6 @@ import * as actionTypes from '../../store/actions';
 
 class BurgerBuilder extends Component {
     state = {
-        purchaseable: false,
         purchaseMode: false,
         loading: false,
         error: false
@@ -39,7 +38,7 @@ class BurgerBuilder extends Component {
             .reduce((sum, elemnt) => {
                 return sum + elemnt;
             }, 0); //0 is the starting element
-        this.setState({purchaseable: sum > 0});
+        return sum > 0;
     };
 
     purchaseModeHandler = () => {
@@ -49,16 +48,7 @@ class BurgerBuilder extends Component {
         this.setState({purchaseMode: false});
     };
     purchaseContinueHandler = () => {
-        const queryParams = [];
-        for (let items in this.state.ingredients){
-            queryParams.push(encodeURIComponent(items) + '=' + encodeURIComponent(this.state.ingredients[items]));
-        }
-        queryParams.push('price='+ this.state.totalPrice);
-        const queryString = queryParams.join('&');
-        this.props.history.push({
-            pathname : '/checkout',
-            search: '?' + queryString
-        });
+        this.props.history.push('/checkout');
     };
 
     render() {
@@ -77,7 +67,7 @@ class BurgerBuilder extends Component {
                     <BuildControls ingredientAdded={this.props.onIngredientAdded}
                                    ingredientRemoved={this.props.onIngredientRemoved}
                                    disabled={disabledInfo}
-                                   purchaseable={this.state.purchaseable}
+                                   purchaseable={this.updatePurchaseState(this.props.ings)}
                                    price={this.props.totalPrice}
                                    ordered={this.purchaseModeHandler}
                     />
